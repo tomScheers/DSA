@@ -1,57 +1,68 @@
-PROGRAM = DSA
+PROGRAM := DSA
 
 CC := clang
 CFLAGS := -Wall -Wextra -Iinclude -Ilib/unity/src
-SRC := $(wildcard src/*.c)
-LIB_SRC := $(filter-out src/main.c, $(SRC))
-APP_OBJ := build/main.o
-LIB_OBJ := $(patsubst src/%.c, build/%.o, $(LIB_SRC))
-BIN := bin/$(PROGRAM)
 
-# Include test runner file explicitly
-TEST_SRC := $(wildcard test/*.c)
-UNITY_SRC := lib/unity/src/unity.c
-TEST_OBJ := $(patsubst test/%.c, build/test/%.o, $(TEST_SRC)) build/unity.o $(LIB_OBJ)
-TEST_BIN := bin/test
+SRC := $(shell find src -name "*.c")
+OBJ := $(patsubst src/%.c,build/%.o,$(SRC))
 
-# === Default build ===
-all: $(BIN) compile_commands.json
-
-# === Build app binary ===
-$(BIN): $(APP_OBJ) $(LIB_OBJ) | bin
-	$(CC) $(CFLAGS) $^ -o $@
-
-# === Build test binary ===
-$(TEST_BIN): $(TEST_OBJ) | bin
-	$(CC) $(CFLAGS) $^ -o $@
+# === Main Program Rules ===
 
 build/%.o: src/%.c | build
+	@mkdir -p $(dir $@)
 	$(CC) $(CFLAGS) -c $< -o $@
+
+bin/$(PROGRAM): $(OBJ) | bin
+	$(CC) $(CFLAGS) $^ -o $@
+
+# === Test ===
+UNITY_OBJ := build/test/unity.o
+UNITY_SRC := lib/unity/src/unity.c
+
+TEST_SRC := $(shell find test -name "*.c")
+TEST_OBJ := $(patsubst test/%.c,build/test/%.o,$(TEST_SRC))
+
+LIB_SRC := $(filter-out src/main.c, $(SRC))
+LIB_OBJ := $(patsubst src/%.c,build/%.o,$(LIB_SRC))
+
+
+bin/test: $(LIB_OBJ) $(TEST_OBJ) $(UNITY_OBJ) | bin
+	$(CC) $(CFLAGS) $^ -o $@
 
 build/test/%.o: test/%.c | build/test
+	@mkdir -p $(dir $@)
 	$(CC) $(CFLAGS) -c $< -o $@
 
-build/unity.o: $(UNITY_SRC) | build
+build/test/unity.o: $(UNITY_SRC) | build
 	$(CC) $(CFLAGS) -c $< -o $@
 
-# === Directories ===
+# === Directories & Files ===
+
 build:
-	mkdir -p build
+	@mkdir -p build
 
-build/test:
-	mkdir -p build/test
+build/test: build
+	@mkdir -p build/test
 
 bin:
-	mkdir -p bin
+	@mkdir -p bin
 
-# === Compile commands ===
-compile_commands.json: clean
-	bear -- make $(BIN)
 
-# === Clean everything ===
+# === Shortcuts ===
+
+all: bin/$(PROGRAM)
+
 clean:
-	rm -rf build bin compile_commands.json
+	rm -rf build bin compile_commands
 
-# === Build and run test ===
-test: $(TEST_BIN)
-	@./$(TEST_BIN)
+run: bin/$(PROGRAM)
+	@./$<
+
+test: bin/test
+	@./$<
+
+comile_commands:
+	bear -- make bin/$(PROGRAM)
+
+
+.PHONY: all clean run test compile_commands.json
