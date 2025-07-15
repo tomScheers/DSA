@@ -3,12 +3,12 @@ The goal of this project is to define header files with data structures and appr
 
 ## Data Structures
 Here's a list of the current data structures I'm planning on implementing:
-[  ] Linked list
-[  ] Dynamic array (vector)
-[  ] Tree
-[  ] Queue
-[  ] Hashmap
-[  ] Stack
+- [ ] Linked list
+- [ ] Dynamic array (vector)
+- [ ] Tree
+- [ ] Queue
+- [ ] Hashmap
+- [ ] Stack
 
 ## Project Structure
 Each data structure will be defined in it's own header file, that way I can include only the necessary data structures needed for the project.
