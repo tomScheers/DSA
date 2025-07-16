@@ -8,22 +8,6 @@
       "-Ilib/unity/src",
       "-c",
       "-o",
-      "build/main.o",
-      "src/main.c"
-    ],
-    "directory": "/home/tom/Programming/C/DSA",
-    "file": "/home/tom/Programming/C/DSA/src/main.c",
-    "output": "/home/tom/Programming/C/DSA/build/main.o"
-  },
-  {
-    "arguments": [
-      "/usr/bin/clang",
-      "-Wall",
-      "-Wextra",
-      "-Iinclude",
-      "-Ilib/unity/src",
-      "-c",
-      "-o",
       "build/vector.o",
       "src/vector.c"
     ],

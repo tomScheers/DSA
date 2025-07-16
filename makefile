@@ -1,7 +1,7 @@
 PROGRAM := DSA
 
 CC := clang
-CFLAGS := -Wall -Wextra -Iinclude -Ilib/unity/src
+CFLAGS := -Wall -Wextra -Iinclude -Ilib/unity/src -g
 
 SRC := $(shell find src -name "*.c")
 OBJ := $(patsubst src/%.c,build/%.o,$(SRC))
@@ -25,7 +25,6 @@ TEST_OBJ := $(patsubst test/%.c,build/test/%.o,$(TEST_SRC))
 LIB_SRC := $(filter-out src/main.c, $(SRC))
 LIB_OBJ := $(patsubst src/%.c,build/%.o,$(LIB_SRC))
 
-
 bin/test: $(LIB_OBJ) $(TEST_OBJ) $(UNITY_OBJ) | bin
 	$(CC) $(CFLAGS) $^ -o $@
 
@@ -47,10 +46,13 @@ build/test: build
 bin:
 	@mkdir -p bin
 
+compile_commands.json:
+	bear -- make
+
 
 # === Shortcuts ===
 
-all: bin/$(PROGRAM)
+all: bin/$(PROGRAM) compile_commands.json
 
 clean:
 	rm -rf build bin compile_commands
@@ -61,8 +63,6 @@ run: bin/$(PROGRAM)
 test: bin/test
 	@./$<
 
-comile_commands:
-	bear -- make bin/$(PROGRAM)
 
 
 .PHONY: all clean run test compile_commands.json
