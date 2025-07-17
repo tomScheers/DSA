@@ -19,8 +19,8 @@ StatusCode vector_set(Vector *vector, size_t index, const void *value, size_t va
   printf("From: ");
   vector->print_fn(target);
   printf("To: ");
-  vector->print_fn(value);
-  memcpy(target, value, vector->elem_size);
+  vector->print_fn((void*)value);
+  memcpy(target, value, val_size);
 
   return DS_SUCCESS;
 }

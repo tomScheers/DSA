@@ -30,27 +30,35 @@ void test_vector_init(void) {
   vector_free(vector);
 
   Vector *vector_struct = NULL;
-  vector_init(&vector_struct, sizeof(struct MyStruct), TYPE_STRUCT,
-              (print_fn)free_struct, (print_fn)print_struct);
+  vector_init(&vector_struct, sizeof(struct MyStruct*), TYPE_STRUCT,
+              (free_fn)free_struct, (print_fn)print_struct);
 
-  char* my_name = "Tom Scheers";
+  char *my_name = "Tom Scheers";
   for (size_t i = 0; i < vector_struct->capacity; ++i) {
     struct MyStruct *my_struct = malloc(sizeof(struct MyStruct));
-
     my_struct->name = malloc(sizeof(char) * strlen(my_name) + 1);
     strcpy(my_struct->name, my_name);
     my_struct->age = 15;
-    vector_append(vector_struct, my_struct, sizeof(struct MyStruct));
+    printf("%d\n", my_struct->age);
+    print_struct(my_struct);
+    vector_append(vector_struct, my_struct, sizeof(struct MyStruct*));
+
+    struct MyStruct *the_struct = NULL;
+    vector_get(vector_struct, i, the_struct);
+
+    print_struct(the_struct);
   }
-  struct MyStruct *my_struct = malloc(sizeof(struct MyStruct));
-  char* second_name = "Bram Scheers";
+
+  struct MyStruct *my_struct = malloc(sizeof(struct MyStruct*));
+  char *second_name = "Bram Scheers";
   my_struct->name = malloc(sizeof(char) * strlen(second_name) + 1);
   strcpy(my_struct->name, second_name);
   my_struct->age = 13;
 
   vector_struct->print_fn(my_struct);
 
-  TEST_ASSERT_EQUAL(DS_SUCCESS, vector_set(vector_struct, 0, my_struct, sizeof(struct MyStruct)));
+  TEST_ASSERT_EQUAL(DS_SUCCESS, vector_set(vector_struct, 0, my_struct,
+                                           sizeof(struct MyStruct*)));
   struct MyStruct *get_struct = NULL;
   vector_get(vector_struct, 0, get_struct);
   print_struct(get_struct);

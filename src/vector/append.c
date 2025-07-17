@@ -22,8 +22,12 @@ StatusCode vector_append(Vector *vector, const void *value, size_t val_size) {
     }
     vector->data = tmp;
   }
-  memcpy((char *)vector->data + vector->size * vector->elem_size, value,
-         vector->elem_size);
+
+
+  //!TODO! SHOULD ADD A COPY_FUNCTION TO COPY OVER STRUCTS
+  memcpy((char *)vector->data + vector->size * val_size, value,
+         val_size);
+
   vector->size++;
   return DS_SUCCESS;
 }

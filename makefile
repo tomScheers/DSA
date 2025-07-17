@@ -1,8 +1,8 @@
 PROGRAM := DSA
 
 CC := clang
-CFLAGS := -Wall -Wextra -Iinclude -Ilib/unity/src -g
-
+CFLAGS := -Wall -Wextra -pedantic -Iinclude -Ilib/unity/src -ggdb
+CFLAGS_EXTRA := -Werror -O3 -fsanitize=address,undefined,leak
 SRC := $(shell find src -name "*.c")
 OBJ := $(patsubst src/%.c,build/%.o,$(SRC))
 
